@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Management - TicketEase</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h2>Your Ticket Information</h2>
+    <div id="ticket-info" class="mt-4"></div>
+    <button id="downloadBtn" class="btn btn-danger mt-3">Download Ticket</button>
+    <button id="deleteBtn" class="btn btn-danger mt-3">Delete Ticket</button>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      const baseUrl = "http://localhost:4800/movies"; // Your API URL
+
+      // Function to fetch all tickets from the server
+      function fetchTickets() {
+        $.get(baseUrl, function(data) {
+          if (data.length > 0) {
+            let cardHtml = '';
+            data.forEach(ticket => {
+              cardHtml += `
+                <div class="card mt-3" id="ticket-${ticket.id}">
+                  <div class="card-body">
+                    <h5 class="card-title" id="movie_name_${ticket.id}">${ticket.movie_name}</h5>
+                    <p><strong>Showtime:</strong> <span id="showtime_${ticket.id}">${ticket.showtime}</span></p>
+                    <p><strong>City:</strong> <span id="city_${ticket.id}">${ticket.city}</span></p>
+                    <p><strong>Ticket Number:</strong> <span id="ticket_no_${ticket.id}">${ticket.ticket_no}</span></p>
+                    <p><strong>User ID:</strong> <span id="user_id_${ticket.id}">${ticket.user_id}</span></p>
+                    <p><strong>Payment Status:</strong> <span id="payment_${ticket.id}">${ticket.payment}</span></p>
+                    <!-- Edit button now stores ticket data in localStorage -->
+                    <button class="btn btn-primary edit-btn" data-id="${ticket.id}" data-movie="${ticket.movie_name}" data-showtime="${ticket.showtime}" data-city="${ticket.city}" data-ticketno="${ticket.ticket_no}" data-userid="${ticket.user_id}" data-payment="${ticket.payment}">Edit</button>
+                    <button class="btn btn-danger" onclick="deleteTicket(${ticket.id})">Delete</button>
+                  </div>
+                </div>
+              `;
+            });
+            $('#ticket-info').html(cardHtml);
+          } else {
+            $('#ticket-info').html('<p>No tickets available.</p>');
+          }
+        });
+      }
+
+      // Delete ticket function
+      window.deleteTicket = function(ticketId) {
+        if (confirm("Are you sure you want to delete this ticket?")) {
+          $.ajax({
+            url: `${baseUrl}/${ticketId}`,
+            type: 'DELETE',
+            success: function() {
+              alert('Ticket deleted successfully');
+              fetchTickets();  // Reload tickets after deletion
+            },
+            error: function() {
+              alert('Failed to delete ticket');
+            }
+          });
+        }
+      };
+
+      // Fetch tickets initially
+      fetchTickets();
+
+      // Handle Edit button click
+      $(document).on('click', '.edit-btn', function() {
+        // Get ticket data from button attributes
+        const ticketData = {
+          id: $(this).data('id'),
+          movie_name: $(this).data('movie'),
+          showtime: $(this).data('showtime'),
+          city: $(this).data('city'),
+          ticket_no: $(this).data('ticketno'),
+          user_id: $(this).data('userid'),
+          payment: $(this).data('payment')
+        };
+        
+        // Store ticket data in localStorage
+        localStorage.setItem('ticketData', JSON.stringify(ticketData));
+
+        // Redirect to update.html with the ticket ID in URL
+        window.location.href = `update.html?id=${ticketData.id}`;
+      });
+
+      // Download ticket (use localStorage for now)
+      $('#downloadBtn').click(function() {
+        const bookingDetails = JSON.parse(localStorage.getItem('bookingDetails'));
+        if (bookingDetails) {
+          const ticketContent = `
+            Name: ${bookingDetails.name}
+            Movie: ${bookingDetails.movie}
+            Showtime: ${bookingDetails.time}
+            Seats: ${bookingDetails.seats.join(', ')}
+            User ID: ${bookingDetails.user_id}
+            Payment Status: ${bookingDetails.payment}
+          `;
+          const blob = new Blob([ticketContent], { type: 'text/plain' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'ticket.txt';
+          link.click();
+        } else {
+          alert('No ticket information available for download.');
+        }
+      });
+
+      // Delete booking from local storage
+      $('#deleteBtn').click(function() {
+        localStorage.removeItem('bookingDetails');
+        $('#ticket-info').html('<p>Ticket is not present.</p>'); // Update display
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In / Register - TicketEase</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      max-width: 600px;
+      margin-top: 50px;
+      padding: 30px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .modal-header, .modal-footer {
+      border: none;
+    }
+    .modal-title {
+      font-weight: bold;
+    }
+    .btn {
+      width: 100%;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .gap {
+      margin-top: 20px; /* Increased vertical gap */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2 class="text-center">Welcome to TicketEase</h2>
+  <button class="btn btn-primary" data-toggle="modal" data-target="#registerModal">Register</button>
+  <div class="gap"></div>
+  <button class="btn btn-danger" data-toggle="modal" data-target="#signInModal">Sign In</button>
+</div>
+
+<!-- Registration Modal -->
+<div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registerModalLabel">Register</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="registerForm">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" required>
+          </div>
+          <div class="form-group">
+            <label for="regEmail">Email address</label>
+            <input type="email" class="form-control" id="regEmail" required>
+          </div>
+          <div class="form-group">
+            <label for="regPassword">Password</label>
+            <input type="password" class="form-control" id="regPassword" required>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" required>
+          </div>
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" class="form-control" id="city" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign In Modal -->
+<div class="modal fade" id="signInModal" tabindex="-1" role="dialog" aria-labelledby="signInModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="signInModalLabel">Sign In</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="signInForm">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" required>
+          </div>
+          <button type="submit" class="btn btn-danger">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+// Open (or create) the database
+let db;
+const request = indexedDB.open("TicketEaseDB", 1);
+
+request.onerror = function(event) {
+  console.error("Database error: ", event.target.errorCode);
+};
+
+request.onsuccess = function(event) {
+  db = event.target.result;
+};
+
+request.onupgradeneeded = function(event) {
+  db = event.target.result;
+  const objectStore = db.createObjectStore("users", { keyPath: "email" });
+  objectStore.createIndex("username", "username", { unique: false });
+  objectStore.createIndex("city", "city", { unique: false });
+  objectStore.createIndex("paymentStatus", "paymentStatus", { unique: false });
+  objectStore.createIndex("ticketStatus", "ticketStatus", { unique: false });
+};
+
+// Function to generate a random ID for the user
+function generateUserId() {
+  return 'user-' + Math.random().toString(36).substr(2, 9);
+}
+
+// Add User function
+function addUser(user) {
+  const transaction = db.transaction(["users"], "readwrite");
+  const objectStore = transaction.objectStore("users");
+  const request = objectStore.add(user);
+
+  request.onsuccess = function() {
+    alert("User registration successful!");
+    $('#registerModal').modal('hide');
+    $('#registerForm')[0].reset();
+  };
+
+  request.onerror = function() {
+    alert("Error adding user: " + request.error);
+  };
+}
+
+// Sign In User
+$('#signInForm').on('submit', function(e) {
+  e.preventDefault();
+  
+  const email = $('#email').val();
+  const password = $('#password').val();
+  
+  const transaction = db.transaction(["users"]);
+  const objectStore = transaction.objectStore("users");
+  const request = objectStore.get(email);
+
+  request.onsuccess = function(event) {
+    const user = event.target.result;
+    if (user && user.password === password) {
+      alert("Sign in successful!");
+      
+      // Store a unique user ID in localStorage
+      localStorage.setItem('userId', user.userId);
+
+      // Check if coming from booking page
+      const comingFromBooking = localStorage.getItem("comingFromBooking");
+      if (comingFromBooking === "true") {
+        localStorage.removeItem("comingFromBooking"); // Clear the flag
+        window.location.href = "bookingpage1.html"; // Redirect to booking page
+      } else {
+        window.location.href = "index.html"; // Redirect to homepage
+      }
+    } else {
+      alert("Invalid email or password.");
+    }
+  };
+});
+
+// Handle Registration Form Submission
+$('#registerForm').on('submit', function(e) {
+  e.preventDefault();
+  
+  const username = $('#username').val();
+  const email = $('#regEmail').val();
+  const password = $('#regPassword').val();
+  const confirmPassword = $('#confirmPassword').val();
+  const city = $('#city').val();
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  const userId = generateUserId(); // Generate a unique ID for the user
+
+  const user = {
+    userId: userId,
+    username: username,
+    email: email,
+    password: password,
+    city: city,
+    paymentStatus: 'pending',
+    ticketStatus: 'not booked'
+  };
+  
+  const transaction = db.transaction(["users"]);
+  const objectStore = transaction.objectStore("users");
+  const request = objectStore.get(email);
+
+  request.onsuccess = function(event) {
+    if (event.target.result) {
+      alert("User with this email already exists.");
+    } else {
+      addUser(user);
+    }
+  };
+});
+
+// Function to set coming from booking
+function setComingFromBooking() {
+  localStorage.setItem("comingFromBooking", "true");
+}
+</script>
+
+</body>
+</html>

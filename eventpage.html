@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Details - TicketEase</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom styling for theme */
+    .navbar, .header-bar {
+      background-color: #f8f9fa;
+    }
+    .navbar .sign-in-btn {
+      color: #fff;
+      background-color: #d9534f;
+      border-color: #d43f3a;
+      font-weight: bold;
+    }
+    .header-view {
+      background-image: url('https://assets-in.bmscdn.com/discovery-catalog/events/et00354858-krtggeqmzt-landscape.jpg');
+      background-size: cover;
+      padding: 60px;
+      color: white;
+      position: relative;
+    }
+    .header-card {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 8px;
+      padding: 30px;
+      margin: 0;
+      width: 100%;
+    }
+    .header-card img {
+      width: 180px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 5px;
+      margin-right: 20px;
+    }
+    .header-card h2 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    .header-card p {
+      margin: 5px 0;
+      font-size: 1.2rem;
+    }
+    .footer {
+      background-color: #343a40;
+      color: white;
+      text-align: center;
+      padding: 10px;
+    }
+    .about-movie {
+      margin-top: 30px;
+      padding: 20px;
+    }
+    .movie-details {
+      margin-top: 20px;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Upper Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light header-bar">
+    <a class="navbar-brand" href="#">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROhB6K1Hfp9JF35CJE1NqlHtJf7VDHBms33A&s" width="60" height="40" alt="TicketEase Logo" class="d-inline-block align-top">
+      TicketEase
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">My Tickets</a></li>
+        <li class="nav-item"><a class="nav-link" href="contactus">Contact Us</a></li>
+        <li class="nav-item"><button class="nav-link sign-in-btn btn btn-danger ml-2" data-toggle="modal" data-target="#signInModal">Sign In</button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header View with Background Image and Movie Details -->
+  <div class="header-view">
+    <div class="header-card">
+      <img src="https://images.filmibeat.com/img/2024/11/singhamagainreview-1730559223.jpg" alt="Movie Poster">
+      <div>
+        <h2>Movie Title: Singham again</h2>
+        <p><strong>Release Date:</strong> March 8, 2023</p>
+        <p><strong>Duration:</strong> 2h 25m</p>
+        <p><strong>Genre:</strong> Romantic Comedy</p>
+        <button id="bookNowBtn" onclick="setComingFromBooking()" class="btn btn-danger">Book Tickets</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- About This Movie Section -->
+  <div class="about-movie">
+    <h3>About This Movie</h3>
+    <div class="movie-details">
+      <p>Singham Again is a 2024 Indian Hindi-language action film written and directed by Rohit Shetty, who also co-produced it under Rohit Shetty Picturez, alongside Reliance Entertainment</p>
+      <p>With a delightful blend of humor and heartfelt moments, this film is a perfect choice for a fun night out at the cinema.</p>
+      
+      <p>Language: Hindi | Country: India</p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2024 TicketEase. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <script>
+    // Function to set flag indicating user came from booking page
+    function setComingFromBooking() {
+      localStorage.setItem("comingFromBooking", "true");
+    }
+
+    // Function to check if the user is signed in
+    function isUserSignedIn() {
+      return localStorage.getItem('userId') !== null;
+    }
+
+    // Book Now Button Click Event
+    document.getElementById('bookNowBtn').addEventListener('click', function() {
+      if (isUserSignedIn()) {
+        // User is signed in, redirect to booking page
+        window.location.href = "bookingpage1.html";
+      } else {
+        // User is not signed in, redirect to signin.html
+        alert("Please sign up or log in before booking.");
+        window.location.href = "signin.html";
+      }
+    });
+  </script>
+
+</body>
+</html>

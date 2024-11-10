@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Ticketing Platform</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    /* Custom styling for theme */
+    
+    .navbar, .header-bar {
+      background-color: white;
+    }
+    .navbar .sign-in-btn {
+      color: #fff;
+      background-color: #d9534f;
+      border-color: #d43f3a;
+      font-weight: bold;
+    }
+    .jumbotron {
+      background-color: #f8f9fa;
+      text-align: center;
+      padding: 1.5rem 0;
+    }
+    .jumbotron img {
+      max-width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .header-text {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+    /* Movie carousel styling */
+    .movie-carousel-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem 0;
+      position: relative;
+    }
+    .movie-carousel {
+      display: flex;
+      overflow-x: scroll;
+      scroll-behavior: smooth;
+      gap: 15px;
+      padding: 10px;
+      width: 100%;
+      max-width: 1200px;
+      scrollbar-width: none;
+    }
+    .movie-carousel::-webkit-scrollbar {
+      display: none;
+    }
+    .movie-card {
+      flex: 0 0 200px;
+      min-width: 200px;
+      max-width: 250px;
+      margin: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+    .movie-card:hover {
+      transform: scale(1.05);
+    }
+    .movie-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+    .card-body {
+      padding: 10px;
+      text-align: center;
+    }
+    .card-title {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      line-height: 1.2em;
+      max-height: 2.4em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      word-wrap: break-word;
+    }
+    .scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      z-index: 1;
+      font-size: 1.5rem;
+    }
+    .scroll-left {
+      left: 10px;
+    }
+    .scroll-right {
+      right: 10px;
+    }
+    .btn-red {
+      background-color: #d9534f;
+      border-color: #d43f3a;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+    .btn-red:hover {
+      background-color: #c9302c;
+      border-color: #ac2925;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light header-bar">
+    <a class="navbar-brand" href="#">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROhB6K1Hfp9JF35CJE1NqlHtJf7VDHBms33A&s" width="60" height="40" alt="TicketEase Logo" class="d-inline-block align-top">
+      TicketEase
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="#">My Tickets</a></li>
+        <li class="nav-item"><a class="nav-link" href="contactus.html">Contact Us</a></li>
+        <li class="nav-item"><a class="nav-link sign-in-btn btn btn-danger ml-2" href="signin.html">Sign In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Header -->
+ <!---- <header class="jumbotron" style="position: relative; overflow: hidden; width: 70%; height: 40vh; margin: 0 auto;">
+    
+    <img src="https://img.freepik.com/free-psd/cinema-still-life-background_23-2150743152.jpg?semt=ais_hybrid" 
+         alt="Welcome to TicketEase" 
+         style="position: absolute; top: 50%; left: 50%; width: 100%; height: auto; transform: translate(-50%, -50%); object-fit: cover;">
+</header>-->
+<header>
+  
+  <div class="header-view">
+    <div class="header-card" style="text-align: center;">
+      <img src="https://img.freepik.com/free-psd/cinema-still-life-background_23-2150743152.jpg?semt=ais_hybrid" alt="Movie Poster" style="max-width: 100%; height: 60%;">
+    </div>
+  </div>
+  
+
+
+
+
+  <!-- Movies Section -->
+  
+  <section class="container my-5">
+    <h2 class="text-center mb-4" >Your go-to platform for booking tickets!</h2>
+    <h2 class="text-center mb-4">Featured Movies</h2>
+    <div class="movie-carousel-container">
+      <button class="scroll-btn scroll-left" onclick="scrollMovies(-300)">&lt;</button>
+      <div class="movie-carousel" id="movie-list">
+        <!-- Movie cards will be dynamically generated here -->
+      </div>
+      <button class="scroll-btn scroll-right" onclick="scrollMovies(300)">&gt;</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3">
+    <p>&copy; 2024 TicketEase. All rights reserved.</p>
+  </footer>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Custom Script -->
+  <script>
+    // Array of movies with unique URLs
+    const movies = [
+      { title: "Singham Again", description: "A comedy romance", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQb2OxHB9uh-29e93mlLosSSGBNG0uFK3aAMg&s" },
+      { title: "Pathaan", description: "An action thriller", image: "https://www.tallengestore.com/cdn/shop/products/Joker_-_Put_On_A_Happy_Face_-_Joaquin_Phoenix_-_Fan_Art_Hollywood_English_Movie_Poster_2_d07a6a68-79a6-4281-bcb5-086881ae5b9c.jpg?v=1579504873" },
+      { title: "Jawan", description: "A gripping story", image: "https://www.tallengestore.com/cdn/shop/products/Joker_-_Put_On_A_Happy_Face_-_Joaquin_Phoenix_-_Fan_Art_Hollywood_English_Movie_Poster_2_d07a6a68-79a6-4281-bcb5-086881ae5b9c.jpg?v=1579504873" },
+      { title: "Rocky Aur Rani Ki Prem Kahani", description: "A romantic drama", image: "https://www.tallengestore.com/cdn/shop/products/Joker_-_Put_On_A_Happy_Face_-_Joaquin_Phoenix_-_Fan_Art_Hollywood_English_Movie_Poster_2_d07a6a68-79a6-4281-bcb5-086881ae5b9c.jpg?v=1579504873" },
+      { title: "Brahmastra: Part One – Shiva", description: "An epic fantasy adventure", image: "https://upload.wikimedia.org/wikipedia/en/5/58/Brahmastra_film_poster.jpg" },
+      { title: "Gadar 2", description: "A patriotic action movie", image: "https://upload.wikimedia.org/wikipedia/en/4/48/Gadar_2_film_poster.jpg" }
+    ];
+
+    // Separate array for "Book Now" URLs
+    const bookNowUrls = [
+      "eventpage.html?movie=Pathaan&cacheBuster=" 
+      
+      
+    ];
+
+    // Function to display movies in card view
+    function displayMovies() {
+      const movieList = document.getElementById("movie-list");
+      movies.forEach((movie, index) => {
+        const movieCard = `
+          <div class="card movie-card">
+            <a href="${movie.image}" target="_blank">
+              <img src="${movie.image}" class="card-img-top" alt="${movie.title}">
+            </a>
+            <div class="card-body">
+              <h5 class="card-title">${movie.title}</h5>
+              <p class="card-text">${movie.description}</p>
+              <!-- Use the unique movie URL from the new array -->
+              <a href="${bookNowUrls[index]}" class="btn btn-red">Book Now</a>
+            </div>
+          </div>
+        `;
+        movieList.insertAdjacentHTML("beforeend", movieCard);
+      });
+    }
+
+    // Function to scroll the movie carousel
+    function scrollMovies(distance) {
+      document.getElementById("movie-list").scrollBy({ left: distance, behavior: 'smooth' });
+    }
+
+    // Display movies on page load
+    window.onload = displayMovies;
+  </script>
+</body>
+</html>

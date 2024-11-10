@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Ticket - TicketEase</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+  <div class="container mt-5">
+    <h2>Update Your Ticket</h2>
+    <div id="ticket-info" class="mt-4">
+      <!-- Ticket details will be populated here -->
+    </div>
+    <button id="saveBtn" class="btn btn-success mt-3">Save Changes</button>
+    <a href="index.html" class="btn btn-secondary mt-3">Back to Ticket Management</a>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      const baseUrl = "http://localhost:4800/movies"; // Your API URL
+
+      // Fetch ticket data from localStorage
+      const ticketData = JSON.parse(localStorage.getItem('ticketData'));
+
+      if (ticketData) {
+        // Populate ticket data in editable fields
+        $('#ticket-info').html(`
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Edit Ticket #${ticketData.id}</h5>
+              <p><strong>Name:</strong> <input type="text" id="name" class="form-control" value="${ticketData.name}"></p>
+              <p><strong>Movie:</strong> <input type="text" id="movie_name" class="form-control" value="${ticketData.movie_name}" readonly></p>
+              <p><strong>City:</strong> <input type="text" id="city" class="form-control" value="${ticketData.city}"></p>
+              <p><strong>Showtime:</strong> <input type="datetime-local" id="showtime" class="form-control" value="${ticketData.showtime.replace(" ", "T")}"></p>
+              <p><strong>Ticket Number:</strong> <input type="number" id="ticket_no" class="form-control" value="${ticketData.ticket_no}" readonly></p>
+              <p><strong>User ID:</strong> <input type="text" id="user_id" class="form-control" value="${ticketData.user_id}" readonly></p>
+              <p><strong>Payment Status:</strong> <input type="text" id="payment" class="form-control" value="${ticketData.payment}" readonly></p>
+            </div>
+          </div>
+        `);
+
+        // Handle Save Changes button
+        $('#saveBtn').click(function() {
+          // Get updated values from the form
+          const updatedData = {
+            name: $('#name').val() || ticketData.name,  // If not changed, keep old value
+            city: $('#city').val() || ticketData.city,  // If not changed, keep old value
+            movie_name: ticketData.movie_name,  // Keep as is
+            showtime: $('#showtime').val() || ticketData.showtime,  // If not changed, keep old value
+            ticket_no: ticketData.ticket_no,  // Keep as is
+            user_id: ticketData.user_id,  // Keep as is
+            payment: ticketData.payment  // Keep as is
+          };
+
+          // Log the updated data to check before sending
+          console.log("Updated Data:", updatedData);
+
+          // Send PUT request to update the ticket
+          $.ajax({
+            url: `${baseUrl}/${ticketData.id}`,  // Use the correct API URL with the ticket ID
+            type: 'PUT',
+            data: JSON.stringify(updatedData),  // Send data as JSON
+            contentType: 'application/json',  // Set correct content type
+            success: function(response) {
+              alert('Ticket updated successfully');
+              window.location.href = 'index.html';  // Redirect back to ticket management page
+            },
+            error: function(error) {
+              console.error(error);
+              alert('Failed to update ticket');
+            }
+          });
+        });
+      } else {
+        $('#ticket-info').html('<p>No ticket data found. Please try again.</p>');
+      }
+    });
+  </script>
+
+</body>
+</html>
